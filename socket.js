@@ -60,18 +60,26 @@ module.exports = (io) => {
                     io.to(sockets[socket.id]).emit("move", roomData.board, roomData.turn)
                     return io.to(sockets[socket.id]).emit("win", { id, type: "tei" })
                 }
+                gameLogic.changeTurn(roomData)
+
                 if (roomData.player2.name === 'computer') {
+                    io.to(sockets[socket.id]).emit("move", roomData.board, roomData.turn)
                     let computerIndex = gameLogic.computer(roomData)
                     if (gameLogic.checkWin(roomData.board, computerIndex, roomData.player2.type)) {
                         gameLogic.updateWin(roomData)
+
                         io.to(sockets[socket.id]).emit("move", roomData.board, roomData.player2.type)
                         let type = roomData.player2.type
                         return io.to(sockets[socket.id]).emit("win", { id, type })
                     }
                 }
+                if (roomData.player2.name == "computer" && roomData.player2.type == roomData.turn.role)
+                    setTimeout(() => {
+                        gameLogic.changeTurn(roomData)
+                        return io.to(sockets[socket.id]).emit("move", roomData.board, roomData.turn)
+                    }, 2000)
 
-                else gameLogic.changeTurn(roomData)
-                io.to(sockets[socket.id]).emit("move", roomData.board, roomData.turn)
+                else io.to(sockets[socket.id]).emit("move", roomData.board, roomData.turn)
             }
 
             socket.on("start-again", () => {
