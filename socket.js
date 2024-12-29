@@ -67,7 +67,6 @@ module.exports = (io) => {
                     let computerIndex = gameLogic.computer(roomData)
                     if (gameLogic.checkWin(roomData.board, computerIndex, roomData.player2.type)) {
                         gameLogic.updateWin(roomData)
-
                         io.to(sockets[socket.id]).emit("move", roomData.board, roomData.player2.type)
                         let type = roomData.player2.type
                         return io.to(sockets[socket.id]).emit("win", { id, type })

@@ -43,12 +43,36 @@ const initGame = (roomData, player, role) => {
 
 const computer = (roomData) => {
 
+
+    let board = roomData.board;
+    for (let index = 0; index < 9; index++) {
+        if (board[index] === ' ') {
+            board[index] = roomData.player2.type
+            if (checkWin(board, index, roomData.player2.type)) {
+                roomData.board[index] = roomData.player2.type
+                return index
+            }
+        }
+    }
+    board = roomData.board;; // Reset for the next check
+    // Check if placing the player's symbol would result in a win (block)
+    for (let index = 0; index < 9; index++) {
+        if (board[index] === ' ') {
+            board[index] = roomData.player1.type;
+            if (checkWin(board, index, roomData.player1.type)) {
+                roomData.board[index] = roomData.player2.type
+                return index
+            }
+        }
+    }
+
     let index;
     do {
         index = Math.floor(Math.random() * (8 - 0 + 1)) + 0;
     } while (roomData.board[index])
     roomData.board[index] = roomData.player2.type
     return index
+
 }
 
 
